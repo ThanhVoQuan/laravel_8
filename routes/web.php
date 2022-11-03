@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Models\User;
+use App\Http\Controllers\CategoriesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,14 +15,24 @@ use App\Models\User;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Client route
+Route::prefix('categories')->group(function() {
 
-Route::get('/unicode', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    //Danh sách chuyên mục 
+    Route::get('/',[CategoriesController::class, 'index'])->name('categories.list');
+    
+    //Lấy chi tiết chuyên mục(áp dụng show form sửa chuyên mục)
+    Route::get('/edit/{id}', [CategoriesController::class, 'getCategory'])->name('categories.edit');
 
-Route::get('/product', function(){
-    //  $user = new User();
-    //  dd($user);
-    return view ('product');
+    //Xử lý update chuyên mục
+    Route::post('/edit/{id}', [CategoriesController::class, 'updateCategory']);
+
+    //Hiển thị form add dữ liệu
+    Route::get('/add', [CategoriesController::class, 'addCategory'])->name('categories.add');
+
+    //Xử lý thêm dữ liệu
+    Route::post('/add', [CategoriesController::class, 'handleAddCategory']);
+
+    //Xóa chuyên mục
+    Route::delete('/delete/{id}',[CategoriesController::class, 'deleteCategory'])->name('categories.delete');
 });
